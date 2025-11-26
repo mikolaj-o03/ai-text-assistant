@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import "package:ai_text_assistant/models/message.dart";
+import 'package:ai_text_assistant/models/message.dart';
 import 'package:ai_text_assistant/providers/messages_provider.dart';
+import 'package:ai_text_assistant/providers/ai_client_provider.dart';
 import 'package:ai_text_assistant/services/ai_client.dart';
 
 final chatControllerProvider = Provider((ref) {
@@ -9,9 +10,11 @@ final chatControllerProvider = Provider((ref) {
 
 class ChatController {
   final Ref ref;
-  ChatController(this.ref);
+  late final AIClient _client;
 
-  final _client = AIClient();
+  ChatController(this.ref) {
+    _client = ref.read(aiClientProvider);
+  }
 
   Future<void> sendUserMessage(String text) async {
     ref.read(messagesProvider.notifier).update((state) {
@@ -21,16 +24,10 @@ class ChatController {
       ];
     });
 
-    await Future.delayed(const Duration(milliseconds: 300));
-
-    if (_client.isConfigured) {
-      final aiReply = await _client.sendMessage(text);
-      sendAiResponse(aiReply);
-    } 
-    else {
-      sendAiResponse("Otrzymałem Twoją wiadomość: \"$text\" (mock AI)");
-    }
+    final reply = await _client.sendMessage(text);
+    sendAiResponse(reply);
   }
+
   void sendAiResponse(String text) {
     ref.read(messagesProvider.notifier).update((state) {
       return [
