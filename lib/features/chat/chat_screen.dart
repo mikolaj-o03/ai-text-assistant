@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-final messagesProvider = StateProvider<List<String>>((ref) => []);
+import 'package:ai_text_assistant/models/message.dart';
+import 'package:ai_text_assistant/providers/messages_provider.dart';
+import 'package:ai_text_assistant/providers/chat_controller.dart';
 
 class ChatScreen extends ConsumerWidget {
   ChatScreen({super.key});
@@ -24,26 +25,28 @@ class ChatScreen extends ConsumerWidget {
               padding: const EdgeInsets.all(16),
               itemCount: messages.length,
               itemBuilder: (context, index) {
-                final msg = messages[index];
+                final message = messages[index];
+                final isUser = message.sender == Sender.user;
+
                 return Align(
-                  alignment: index % 2 == 0
-                    ? Alignment.centerRight
-                    : Alignment.centerLeft,
+                  alignment:
+                      isUser ? Alignment.centerRight : Alignment.centerLeft,
                   child: Container(
                     margin: const EdgeInsets.symmetric(vertical: 4),
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: index % 2 == 0
-                        ? Colors.blue.shade200
-                        : Colors.grey.shade300,
+                      color: isUser
+                          ? Colors.blue.shade200
+                          : Colors.grey.shade300,
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    child: Text(msg),
+                    child: Text(message.text),
                   ),
                 );
-              }
+              },
             ),
           ),
+
           Padding(
             padding: const EdgeInsets.all(12),
             child: Row(
@@ -52,11 +55,11 @@ class ChatScreen extends ConsumerWidget {
                   child: TextField(
                     controller: _controller,
                     decoration: const InputDecoration(
-                      hintText: "Napisz wiadomośc...",
+                      hintText: "Napisz wiadomość...",
                       border: OutlineInputBorder(),
                     ),
                   ),
-                  ),
+                ),
                 const SizedBox(width: 8),
                 IconButton(
                   icon: const Icon(Icons.send),
@@ -64,11 +67,10 @@ class ChatScreen extends ConsumerWidget {
                     final text = _controller.text.trim();
                     if (text.isEmpty) return;
 
-                    ref.read(messagesProvider.notifier).update((state) {
-                      return [...state, text];
-                    });
+                    ref.read(chatControllerProvider).sendUserMessage(text);
+
                     _controller.clear();
-                  }
+                  },
                 ),
               ],
             ),
