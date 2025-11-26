@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:ai_text_assistant/providers/messages_provider.dart';
-import 'package:ai_text_assistant/models/message.dart';
 
+final messagesProvider = StateProvider<List<String>>((ref) => []);
 
 class ChatScreen extends ConsumerWidget {
   ChatScreen({super.key});
@@ -25,25 +24,24 @@ class ChatScreen extends ConsumerWidget {
               padding: const EdgeInsets.all(16),
               itemCount: messages.length,
               itemBuilder: (context, index) {
-                final message = messages[index];
-                final isUser = message.sender == Sender.user;
-
+                final msg = messages[index];
                 return Align(
-                  alignment:
-                      isUser ? Alignment.centerRight : Alignment.centerLeft,
+                  alignment: index % 2 == 0
+                    ? Alignment.centerRight
+                    : Alignment.centerLeft,
                   child: Container(
                     margin: const EdgeInsets.symmetric(vertical: 4),
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: isUser
-                          ? Colors.blue.shade200
-                          : Colors.grey.shade300,
+                      color: index % 2 == 0
+                        ? Colors.blue.shade200
+                        : Colors.grey.shade300,
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    child: Text(message.text),
+                    child: Text(msg),
                   ),
                 );
-              },
+              }
             ),
           ),
           Padding(
@@ -54,11 +52,11 @@ class ChatScreen extends ConsumerWidget {
                   child: TextField(
                     controller: _controller,
                     decoration: const InputDecoration(
-                      hintText: "Napisz wiadomość...",
+                      hintText: "Napisz wiadomośc...",
                       border: OutlineInputBorder(),
                     ),
                   ),
-                ),
+                  ),
                 const SizedBox(width: 8),
                 IconButton(
                   icon: const Icon(Icons.send),
@@ -67,15 +65,10 @@ class ChatScreen extends ConsumerWidget {
                     if (text.isEmpty) return;
 
                     ref.read(messagesProvider.notifier).update((state) {
-                      return [
-                        ...state,
-                        Message(text: text, sender: Sender.user),
-                      ];
+                      return [...state, text];
                     });
-
                     _controller.clear();
-
-                  },
+                  }
                 ),
               ],
             ),
