@@ -1,16 +1,20 @@
-# ai_text_assistant
+# AI Text Assistant
 
-A new Flutter project.
+Prosty czat w Flutterze z modelową architekturą. Gotowy do podpięcia AI.  
+Projekt pokazuje umiejętność integracji AI w aplikacji mobilnej oraz czystą strukturę kodu.
 
-## Getting Started
+## Funkcje:
+- Wysyłanie wiadomości przez użytkownika  
+- Odpowiedź Mock AI („Otrzymałem Twoją wiadomość: …”) - demo
+- Architektura z podziałem na warstwy:
+  - UI (Flutter + widgets)  
+  - State management (Riverpod)  
+  - Logika chatu (ChatController + Provider)  
+  - Warstwa serwisów (AIClient stub / przygotowana do podpięcia prawdziwego API)  
+- Gotowość do podmiany mocka na prawdziwe AI — struktura plug-and-play
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+  ## Jak uruchomić:
+  1. Sklonuj repozytorium
+  2. W folderze uruchom (bash):
+  - flutter pub get
+  - flutter run
