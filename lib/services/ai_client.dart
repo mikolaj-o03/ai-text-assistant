@@ -6,4 +6,3 @@ class AIClient {
     return '[MOCK AI] Otrzymałem Twoją wiadomość: "$userMessage"';
   }
 }
-
